@@ -8,6 +8,9 @@ $dice = new Dice();
 
 $i = $dice->DiceRoll();
 
-print($i);
+$board = new Board();
+
+$list = $board->getBorad();
+// print_r($list);
 
 ?>
