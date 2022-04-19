@@ -2,8 +2,8 @@
 
 class Dice{
 
-    public function DiceRoll(){
-        return array_rand([1,2,3,4,5,6]);
+    public function diceRoll(){
+        return array_rand(range(1,3));
     }
 
 }

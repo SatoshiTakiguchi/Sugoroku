@@ -4,13 +4,11 @@ require 'Classes/Dice.php';
 require 'Classes/Game.php';
 require 'Classes/Player.php';
 
-$dice = new Dice();
-
-$i = $dice->DiceRoll();
-
-$board = new Board();
-
-$list = $board->getBorad();
-// print_r($list);
+$game = new Game();
+$game->addPlayer(new Player("Taro"));
+$game->addPlayer(new Player("Jiro"));
+$game->setBoard(new Board('data/board.csv'));
+// $geme->setDice(new Dice());
+$game->start();
 
 ?>
