@@ -1,22 +1,24 @@
 <?php
 
 class Dice{
-    private $dice_range;
+    private $number_list;  // 出目のリスト
+    private $number_range; // 初期サイコロの出目
 
     public function __construct(
-        $dice_range = 3
+        $number_range = 3
     ){
-        $this->dice_range = $dice_range;   
+        $this->number_range = $number_range;
+        $this->number_list = range(1,$this->number_range);   
     }
 
     public function diceRoll(){
-        $num_list = range(1,$this->dice_range);
-        $key = array_rand($num_list);
-        return $num_list[$key];
+        $key = array_rand($this->number_list);
+        $this->number_list = range(1,$this->number_range);
+        return $this->number_list[$key];
     }
 
-    public function setDiceRange($dice_range){
-        $this->dice_range = $dice_range;
+    public function setDiceList($number_list){
+        $this->number_list = $number_list;
     }
 
 }

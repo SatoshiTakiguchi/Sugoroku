@@ -9,6 +9,7 @@ class Player{
     private $position;
     private $action_num;
     private $isAuto;
+    private $penalty_turn;
 
     public function __construct(
         $name,
@@ -19,6 +20,7 @@ class Player{
         $this->position = 0;
         $this->action_num = 0;
         $this->isAuto = $isAuto;
+        $this->penalty_turn = 0;
     }
 
     // データ取得関数
@@ -34,35 +36,42 @@ class Player{
         public function getActionNum(){
             return $this->action_num;
         }
+        public function getPenaltyTurn(){
+            return $this->penalty_turn;
+        }
 
-    // データ入力関数
+    // データ変更関数
         public function setPosition($num){
             $this->position = $num;
         }
         public function setDice($dice){
             $this->dice = $dice;
         }
-
-    //
-    public function addActionNum(){
-        $this->action_num += 1;
-    }
+        public function addPenaltyTurn($turn){
+            $this->penalty_turn += $turn;
+        }
+        public function addActionNum(){
+            $this->action_num += 1;
+        }
+        public function addPosition($number){
+            $this->position += $number;
+        }
 
     public function action(){
         echo $this->name,"の番\n";
         if(!$this->isAuto){
             WaitProcessing::enter();
         }
-        $this->diceRoll();
+        $this->dice();
     }
 
-    public function diceRoll(){
+    public function dice(){
         $dice_res = $this->dice->diceRoll();
         echo $dice_res,"が出た！\n";
         WaitProcessing::sleep(0.5);
         echo $dice_res,"進む。\n";
         WaitProcessing::sleep(0.5);
-        $this->position += $dice_res;
+        $this->addPosition($dice_res);
     }
 
 }
