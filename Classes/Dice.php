@@ -3,7 +3,9 @@
 class Dice{
 
     public function diceRoll(){
-        return array_rand(range(1,3));
+        $num_list = range(1,3);
+        $key = array_rand($num_list);
+        return $num_list[$key];
     }
 
 }
