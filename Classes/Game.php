@@ -40,38 +40,50 @@ class Game{
         }
     }
 
+    //
+    private function printToGoal($player){
+        $goal_position = count($this->square_list) - 1;
+        echo "ゴールまで",$goal_position-$player->getPosition(),"マス\n";
+        WaitProcessing::sleep(0.5);
+    }
+
     public function start(){
         // ゴール位置取得
-        $goal_position = count($this->square_list);
+        $goal_position = count($this->square_list) - 1;
         while($this->player_list){
             foreach($this->player_list as $player){
+                echo $player->getName(),"の番\n";
+                $this->printToGoal($player);
+                // 休み処理
                 if($player->getPenaltyTurn()){
                     $player->action();
                     echo "\n";
                     continue;
                 }
+                //行動
                 $player->action();
+
+                // ゴール判定
                 $position = $player->getPosition();
-
-                // ゴール判定
                 if($goal_position <= $position){
                     $this->resultProcessiong($player);
                     echo "\n";
                     continue;
                 }
 
+                // 止まったマス処理
                 $square = $this->square_list[$position];
-                Ivent::apply($square);
+                Ivent::apply($player,$square);
 
                 // ゴール判定
+                $position = $player->getPosition();
                 if($goal_position <= $position){
                     $this->resultProcessiong($player);
                     echo "\n";
                     continue;
                 }
 
-                echo "ゴールまで",$goal_position-$position,"マス\n";
-                WaitProcessing::sleep(0.5);
+                $this->printToGoal($player);
                 echo "\n";
             }
         }

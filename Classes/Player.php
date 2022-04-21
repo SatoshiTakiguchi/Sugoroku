@@ -55,10 +55,12 @@ class Player{
         }
         public function addPosition($number){
             $this->position += $number;
+            if($this->position < 0){
+                $this->position = 0;
+            }
         }
 
     public function action(){
-        echo $this->name,"の番\n";
         $this->action_num += 1;
         if(!$this->isAuto){
             WaitProcessing::enter();
@@ -75,6 +77,8 @@ class Player{
     }
 
     public function dice(){
+        echo "サイコロを振った。\n";
+        WaitProcessing::sleep(0.5);
         $dice_res = $this->dice->diceRoll();
         echo $dice_res,"が出た！\n";
         WaitProcessing::sleep(0.5);
