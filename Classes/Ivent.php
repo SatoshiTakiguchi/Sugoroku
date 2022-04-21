@@ -28,7 +28,12 @@ class Ivent{
     }
 
     private static function getItem($player){
-        $player->addItem(new Item());
+        echo "アイテムマスに止まった。\n";
+        WaitProcessing::sleep(0.5);
+        $item = new Item();
+        $player->addItem($item);
+        echo $item->getName(),"を獲得した！\n";
+        echo "使うと",$item->getIvent(),"効果がある\n";
     }
 
     // 単純移動マス
