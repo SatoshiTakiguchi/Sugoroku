@@ -20,7 +20,7 @@ class Player{
         $this->position = 0;
         $this->action_num = 0;
         $this->isAuto = $isAuto;
-        $this->penalty_turn = 0;
+        $this->penalty_turn = 1;
     }
 
     // データ取得関数
@@ -59,9 +59,18 @@ class Player{
 
     public function action(){
         echo $this->name,"の番\n";
+        $this->action_num += 1;
         if(!$this->isAuto){
             WaitProcessing::enter();
         }
+        // 休み処理
+        if($this->penalty_turn){
+            echo "{$this->name}は{$this->penalty_turn}回休み\n";
+            $this->penalty_turn -= 1;
+            WaitProcessing::sleep(0.5);
+            return;
+        }
+
         $this->dice();
     }
 

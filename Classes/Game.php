@@ -27,7 +27,6 @@ class Game{
             array_keys($this->player_list,$player)[0],
             1
         );
-        echo "\n";
     }
 
     // 結果出力
@@ -46,15 +45,17 @@ class Game{
         while($this->player_list){
             foreach($this->player_list as $player){
                 if($player->getPenaltyTurn()){
-                    $player->addPenaltyTurn();
+                    $player->action();
+                    echo "\n";
+                    continue;
                 }
-                $player->addActionNum();
                 $player->action();
                 $position = $player->getPosition();
 
                 // ゴール判定
                 if($goal_position <= $position){
                     $this->resultProcessiong($player);
+                    echo "\n";
                     continue;
                 }
 
@@ -64,6 +65,7 @@ class Game{
                 // ゴール判定
                 if($goal_position <= $position){
                     $this->resultProcessiong($player);
+                    echo "\n";
                     continue;
                 }
 
