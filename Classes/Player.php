@@ -70,15 +70,50 @@ class Player{
             $this->item_list[] = $item;
         }
 
-    public function useItem($item,$player_list){
-        Ivent::apply($player_list,$this,$item->getIvent());
+    private function printActionList(){
+        echo "0:サイコロを振る\n";
+        echo "1:アイテムを使用する\n";
     }
 
-    public function action(){
-        $this->action_num += 1;
-        if(!$this->isAuto){
-            WaitProcessing::enter();
+    private function printItemList(){
+        echo "\n使用するアイテムを選んでください。\n";
+        for($num = 0; $num < count($this->item_list); $num++){
+            $item = $this->item_list[$num];
+            echo "{$num}:{$item->getName()}";
+            echo "(効果){$item->getIvent()}\n";
         }
+        echo "\n",count($this->item_list),":行動選択にもどる\n";
+    }
+
+    private function selectItemNumber(){
+        while(true){
+            $this->printItemList();
+            $item_key = fgets(STDIN);
+            // 選択しなおしを返す
+            if($item_key == count($this->item_list)){
+                return $item_key;
+            }
+
+            // 確認して値を返す
+            if($item_key < count($this->item_list)){
+                if(WaitProcessing::submit($item_key)){
+                    return $item_key;        
+                }
+                continue;
+            }
+
+            WaitProcessing::sleep(0.2);
+            echo "指定された数字を入力してください。\n";
+        }
+    }
+
+    private function useItem($item_key,$player_list){
+        Ivent::apply($player_list, $this, $this->item_list[(int)$item_key]->getIvent());
+        array_splice($this->item_list,$item_key,1);
+    }
+
+    public function action($player_list){
+        $this->action_num += 1;
         // 休み処理
         if($this->penalty_turn){
             echo "{$this->name}は{$this->penalty_turn}回休み\n";
@@ -86,8 +121,35 @@ class Player{
             WaitProcessing::sleep(0.5);
             return;
         }
+        // 行動リスト表示
+        while (true){
+            $this->printActionList();
+            if(!$this->isAuto){
+                $action_number = fgets(STDIN);   
+            }else{
+                $this->dice();
+                break;
+            }
+            switch ($action_number){
+                // サイコロ
+                case 0:
+                    if(WaitProcessing::submit($action_number)){
+                        $this->dice();
+                        break 2;
+                    }
+                    continue;
+                // アイテム
+                case 1:
+                    $item_key = $this->selectItemNumber();
+                    // 行動選択し直す
+                    if ($item_key == count($this->item_list)){
+                        continue;
+                    }
+                    // アイテム使用
+                    $this->useItem($item_key,$player_list);
 
-        $this->dice();
+            }
+        }
     }
 
     public function dice(){

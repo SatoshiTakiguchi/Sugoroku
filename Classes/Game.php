@@ -9,6 +9,7 @@ class Game{
     private $player_list = [];
     private $goal_players = [];
 
+    // ゲーム準備
     public function addPlayer($player){
         $this->player_list[] = $player;
     }
@@ -61,7 +62,7 @@ class Game{
                     continue;
                 }
                 //行動
-                $player->action();
+                $player->action($this->player_list);
 
                 // ゴール判定
                 $position = $player->getPosition();
@@ -83,6 +84,7 @@ class Game{
                     continue;
                 }
 
+                // ゴールまでいくつか
                 $this->printToGoal($player);
                 echo "\n";
             }

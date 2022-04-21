@@ -17,6 +17,17 @@ class WaitProcessing{
         echo "EnterKeyを押してください";
         fgets(STDIN);
     }
+
+    public static function submit($number){
+        echo "{$number}でよろしいですか\n";
+        echo "5:大丈夫\n";
+        echo "5以外:やり直す\n";
+        $flag = fgets(STDIN);
+        if($flag == 5){
+            return true;
+        }
+        return false;
+    }
 }
 
 

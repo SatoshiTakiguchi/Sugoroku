@@ -6,7 +6,7 @@ require 'Classes/Player.php';
 
 $game = new Game();
 $game->addPlayer(new Player("Taro"));
-$game->addPlayer(new Player("Jiro"));
+$game->addPlayer(new Player("Jiro",$isAuto=true));
 $game->setBoard(new Board('data/board.csv'));
 
 $game->start();
