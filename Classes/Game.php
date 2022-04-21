@@ -40,7 +40,7 @@ class Game{
         }
     }
 
-    //
+    // ゴールまでのマス数
     private function printToGoal($player){
         $goal_position = count($this->square_list) - 1;
         echo "ゴールまで",$goal_position-$player->getPosition(),"マス\n";
@@ -73,7 +73,7 @@ class Game{
 
                 // 止まったマス処理
                 $square = $this->square_list[$position];
-                Ivent::apply($player,$square);
+                Ivent::apply($this->player_list,$player,$square);
 
                 // ゴール判定
                 $position = $player->getPosition();

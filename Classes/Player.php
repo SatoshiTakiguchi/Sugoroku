@@ -2,6 +2,8 @@
 
 require_once 'Classes/Dice.php';
 require_once 'Classes/WaitProcessing.php';
+require_once 'Classes/Item.php';
+require_once 'Classes/Ivent.php';
 
 class Player{
     private $name;
@@ -10,6 +12,7 @@ class Player{
     private $action_num;
     private $isAuto;
     private $penalty_turn;
+    private $item_list;
 
     public function __construct(
         $name,
@@ -20,7 +23,8 @@ class Player{
         $this->position = 0;
         $this->action_num = 0;
         $this->isAuto = $isAuto;
-        $this->penalty_turn = 1;
+        $this->penalty_turn = 0;
+        $this->item_list = [];
     }
 
     // データ取得関数
@@ -38,6 +42,9 @@ class Player{
         }
         public function getPenaltyTurn(){
             return $this->penalty_turn;
+        }
+        public function getItemList(){
+            return $this->item_list;
         }
 
     // データ変更関数
@@ -59,6 +66,13 @@ class Player{
                 $this->position = 0;
             }
         }
+        public function addItem($item){
+            $this->item_list[] = $item;
+        }
+
+    public function useItem($item,$player_list){
+        Ivent::apply($player_list,$this,$item->getIvent());
+    }
 
     public function action(){
         $this->action_num += 1;

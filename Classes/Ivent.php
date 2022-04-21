@@ -1,10 +1,11 @@
 <?php
 
 require_once 'Classes/WaitProcessing.php';
+require_once 'Classes/Item.php';
 
 class Ivent{
 
-    public static function apply($player,$square){
+    public static function apply($plyaer_list,$player,$square){
         if($square == "何もなし"){
             Ivent::nothing();
         }
@@ -16,10 +17,18 @@ class Ivent{
         if(preg_match("/[0-9]+マスもどる/",$square)){
             Ivent::reducePlayerPosition($player,$square);
         }
+
+        if($square == "アイテム"){
+            Ivent::getItem($player);
+        }
     }
 
     private static function nothing(){
         echo "何もなし\n";
+    }
+
+    private static function getItem($player){
+        $player->addItem(new Item());
     }
 
     // 単純移動マス
