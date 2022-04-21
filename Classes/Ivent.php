@@ -41,7 +41,6 @@ class Ivent{
         // 数値抽出
         $number = (int)str_replace("マスすすむ","",$square);
 
-        echo $number,"すすむマスに止まった。\n";
         WaitProcessing::sleep(0.5);
         echo $number,"マスすすむ。\n";
         $plyaer->addPosition($number);
@@ -50,7 +49,6 @@ class Ivent{
         // 数値抽出
         $number = (int)str_replace("マス戻る","",$square);
 
-        echo $number,"もどるマスに止まった。\n";
         WaitProcessing::sleep(0.5);
         echo $number,"マスもどる。\n";
         $player->addPosition(-$number);

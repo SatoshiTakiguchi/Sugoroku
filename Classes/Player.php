@@ -82,7 +82,7 @@ class Player{
             echo "{$num}:{$item->getName()}";
             echo "(効果){$item->getIvent()}\n";
         }
-        echo "\n",count($this->item_list),":行動選択にもどる\n";
+        echo count($this->item_list),":行動選択にもどる\n";
     }
 
     private function selectItemNumber(){
@@ -108,7 +108,9 @@ class Player{
     }
 
     private function useItem($item_key,$player_list){
-        Ivent::apply($player_list, $this, $this->item_list[(int)$item_key]->getIvent());
+        $item = $this->item_list[(int)$item_key];
+        echo $item->getName(),"を使った\n";
+        Ivent::apply($player_list, $this, $item->getIvent());
         array_splice($this->item_list,$item_key,1);
     }
 
@@ -137,16 +139,17 @@ class Player{
                         $this->dice();
                         break 2;
                     }
-                    continue;
+                    continue 2;
                 // アイテム
                 case 1:
                     $item_key = $this->selectItemNumber();
                     // 行動選択し直す
                     if ($item_key == count($this->item_list)){
-                        continue;
+                        continue 2;
                     }
                     // アイテム使用
                     $this->useItem($item_key,$player_list);
+                    break 2;
 
             }
         }

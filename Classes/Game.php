@@ -74,6 +74,7 @@ class Game{
 
                 // 止まったマス処理
                 $square = $this->square_list[$position];
+                echo $square,"マスに止まった\n";
                 Ivent::apply($this->player_list,$player,$square);
 
                 // ゴール判定
