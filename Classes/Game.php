@@ -4,7 +4,8 @@ require_once 'Classes/WaitProcessing.php';
 require_once 'Classes/Ivent.php';
 
 class Game{
-    private $board;
+    private $board_instance;
+    private $square_list;
     private $player_list = [];
     private $goal_players = [];
 
@@ -12,7 +13,8 @@ class Game{
         $this->player_list[] = $player;
     }
     public function setBoard($board){
-        $this->board = $board;
+        $this->board_instance = $board;
+        $this->square_list = $board->getBorad();
     }
 
     // 結果入力
@@ -39,7 +41,7 @@ class Game{
     }
 
     public function start(){
-        $board = $this->board->getBorad();
+        $square_list = $this->board->getBorad();
         // ゴール位置取得
         $goal_position = count($this->board->getBorad());
         while($this->player_list){
@@ -59,7 +61,7 @@ class Game{
                     continue;
                 }
 
-                $square = $board[$position];
+                $square = $square_list[$position];
                 Ivent::apply($square);
 
                 // ゴール判定
