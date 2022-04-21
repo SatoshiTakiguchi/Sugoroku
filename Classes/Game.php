@@ -20,7 +20,7 @@ class Game{
     // 結果入力
     private function resultProcessiong($player){
         $this->goal_players[] = $player;
-        $goal_position = count($this->board->getBorad());
+        $goal_position = count($this->square_list);
         $player->setPosition($goal_position);
         echo "{$player->getName()}はゴールした\n";
         // player_listから削除
@@ -41,9 +41,8 @@ class Game{
     }
 
     public function start(){
-        $square_list = $this->board->getBorad();
         // ゴール位置取得
-        $goal_position = count($this->board->getBorad());
+        $goal_position = count($this->square_list);
         while($this->player_list){
             foreach($this->player_list as $player){
                 if($player->getPenaltyTurn()){
@@ -61,7 +60,7 @@ class Game{
                     continue;
                 }
 
-                $square = $square_list[$position];
+                $square = $this->square_list[$position];
                 Ivent::apply($square);
 
                 // ゴール判定
