@@ -8,13 +8,13 @@ class Ivent{
         if($square == "何もなし"){
             Ivent::nothing();
         }
+        // すすむマス
         if(preg_match("/[0-9]+マスすすむ/",$square)){
-            $number = (int)str_replace("マスすすむ","",$square);
-            Ivent::addPlayerPosition($player,$number);
+            Ivent::addPlayerPosition($player,$square);
         }
+        // もどるマス
         if(preg_match("/[0-9]+マスもどる/",$square)){
-            $number = (int)str_replace("マス戻る","",$square);
-            Ivent::reducePlayerPosition($player,$number);
+            Ivent::reducePlayerPosition($player,$square);
         }
     }
 
@@ -23,13 +23,19 @@ class Ivent{
     }
 
     // 単純移動マス
-    private static function addPlayerPosition($plyaer,$number){
-        echo abs($number),"すすむマスに止まった。\n";
+    private static function addPlayerPosition($plyaer,$square){
+        // 数値抽出
+        $number = (int)str_replace("マスすすむ","",$square);
+
+        echo $number,"すすむマスに止まった。\n";
         WaitProcessing::sleep(0.5);
-        echo abs($number),"マスすすむ。\n";
+        echo $number,"マスすすむ。\n";
         $plyaer->addPosition($number);
     }
-    private static function reducePlayerPosition($player,$number){
+    private static function reducePlayerPosition($player,$square){
+        // 数値抽出
+        $number = (int)str_replace("マス戻る","",$square);
+
         echo $number,"もどるマスに止まった。\n";
         WaitProcessing::sleep(0.5);
         echo $number,"マスもどる。\n";
