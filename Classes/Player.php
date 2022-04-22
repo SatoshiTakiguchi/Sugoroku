@@ -105,15 +105,15 @@ class Player{
         while(true){
             $this->printItemList();
             $item_key = trim(fgets(STDIN));
-            // 選択しなおしを返す
+            // 選択しなおし
             if($item_key == count($this->item_list)){
                 return $item_key;
             }
-
+            // 入力が正しくない場合
             if(!PlayerInput::inputCheck($this->item_list,$item_key)){continue;}
             
             // 確認して値を返す
-            if(WaitProcessing::submit($item_key)){
+            if(WaitProcessing::submit($this->item_list[$item_key]->getName())){
                 return (int)$item_key;        
             }
             continue;
@@ -147,7 +147,18 @@ class Player{
         }
         // マップ確認
         private function printMap($game){
-            $game->printBoardAndPlayerPosition();
+            echo "0:全体マップ\n";
+            echo "1:部分マップ\n";
+            echo "その他:もどる\n";
+            $key = fgets(STDIN);
+            switch($key){
+                case 0:
+                    $game->printAllMap();
+                case 1:
+                    $game->printPartOfMap($this->position);
+                default:
+                    return;
+            }
             echo "エンターを押して行動選択に戻る\n";
             WaitProcessing::enter($this->isAuto);
         }
@@ -181,7 +192,7 @@ class Player{
             switch ($action_number){
                 // サイコロ
                 case 0:
-                    if(WaitProcessing::submit($action_number)){
+                    if(WaitProcessing::submit("サイコロ")){
                         $this->dice();
                         break 2;
                     }
