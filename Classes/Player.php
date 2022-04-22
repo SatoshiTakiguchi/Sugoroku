@@ -23,7 +23,7 @@ class Player{
         $this->position = 0;
         $this->action_num = 0;
         $this->isAuto = $isAuto;
-        $this->penalty_turn = 0;
+        $this->penalty_turn = 2;
         $this->item_list = [];
     }
 
@@ -74,6 +74,7 @@ class Player{
     private function printActionList(){
         echo "0:サイコロを振る\n";
         echo "1:アイテムを使用する\n";
+        echo "2:マップの表示\n";
     }
 
     // アイテムリスト表示
@@ -85,6 +86,13 @@ class Player{
             echo "(効果){$item->getIvent()}\n";
         }
         echo count($this->item_list),":行動選択にもどる\n";
+    }
+
+    // ゴールまでのマス数表示
+    public function printToGoal($game){
+        $goal_square = $game->getGoalSquare();
+        echo "ゴールまで",$goal_square-$this->getPosition(),"マス\n";
+        WaitProcessing::sleep(0.5);
     }
 
     // アイテム選択処理
@@ -110,26 +118,59 @@ class Player{
         }
     }
 
+    // 終了確認
+    public function confirmEnd(){
+        echo "エンターキーを押して",$this->name,"さんの番を終了する。\n";
+        WaitProcessing::enter($this->isAuto);
+    }
+
+    // サイコロ
+    public function dice(){
+        echo "サイコロを振った。\n";
+        WaitProcessing::sleep(0.5);
+        $dice_res = $this->dice->diceRoll();
+        echo $dice_res,"が出た！\n";
+        WaitProcessing::sleep(0.5);
+        echo $dice_res,"進む。\n";
+        WaitProcessing::sleep(0.5);
+        $this->addPosition($dice_res);
+    }
+    // アイテム
+    private function useItem($item_key,$player_list){
+        $item = $this->item_list[(int)$item_key];
+        echo $item->getName(),"を使った\n";
+        Ivent::apply($player_list, $this, $item->getIvent());
+        array_splice($this->item_list,$item_key,1);
+    }
+    // マップ確認
+    private function printMap($game){
+        $game->printBoardAndPlayerPosition();
+        echo "エンターを押して行動選択に戻る\n";
+        WaitProcessing::enter($this->isAuto);
+    }
+
     // 行動
-    public function action($player_list){
+    public function action($game){
+        $player_list = $game->getPlayerList();
         $this->action_num += 1;
-        // 休み処理
-        if($this->penalty_turn){
-            echo "{$this->name}は{$this->penalty_turn}回休み\n";
-            $this->penalty_turn -= 1;
-            WaitProcessing::sleep(0.5);
-            return;
-        }
-        // 行動リスト表示
         while (true){
-            $this->printActionList();
-            // オート操作処理
-            if(!$this->isAuto){
-                $action_number = fgets(STDIN);   
-            }else{
-                $this->dice();
+            echo $this->name,"さんの番\n";
+            // 休み処理
+            if($this->penalty_turn){
+                echo "{$this->name}は{$this->penalty_turn}回休み\n";
+                $this->penalty_turn -= 1;
                 break;
             }
+            // ゴールまでのマス数
+            $this->printToGoal($game);
+            // 行動リスト表示
+            $this->printActionList();
+            // オート操作処理
+            if($this->isAuto){
+                $this->dice();
+                break;   
+            }
+            $action_number = fgets(STDIN);
             switch ($action_number){
                 // サイコロ
                 case 0:
@@ -149,37 +190,12 @@ class Player{
                     $this->useItem($item_key,$player_list);
                     break 2;
 
+                case 2:
+                    $this->printMap($game);
+                    continue 2;
             }
         }
     }
-
-    // ゴールまでのマス数
-    public function printToGoal($game){
-        $goal_square = $game->getGoalSquare();
-        echo "ゴールまで",$goal_square-$this->getPosition(),"マス\n";
-        WaitProcessing::sleep(0.5);
-    }
-
-    // サイコロ
-    public function dice(){
-        echo "サイコロを振った。\n";
-        WaitProcessing::sleep(0.5);
-        $dice_res = $this->dice->diceRoll();
-        echo $dice_res,"が出た！\n";
-        WaitProcessing::sleep(0.5);
-        echo $dice_res,"進む。\n";
-        WaitProcessing::sleep(0.5);
-        $this->addPosition($dice_res);
-    }
-
-    // アイテム
-    private function useItem($item_key,$player_list){
-        $item = $this->item_list[(int)$item_key];
-        echo $item->getName(),"を使った\n";
-        Ivent::apply($player_list, $this, $item->getIvent());
-        array_splice($this->item_list,$item_key,1);
-    }
-
 }
 
 ?>

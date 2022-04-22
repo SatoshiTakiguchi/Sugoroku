@@ -39,7 +39,6 @@ class Board{
             $this->square_list[] = $data[0];
         }
         $this->square_list[] = "ゴール";
-        print_r($this->square_list);
     }
 }
 

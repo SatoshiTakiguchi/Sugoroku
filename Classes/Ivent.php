@@ -30,7 +30,6 @@ class Ivent{
     }
     // アイテムマス
     private static function getItem($player){
-        echo "アイテムマスに止まった。\n";
         WaitProcessing::sleep(0.5);
         $item = new Item();
         $player->addItem($item);

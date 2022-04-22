@@ -10,11 +10,12 @@ class WaitProcessing{
         usleep($time);
     }
 
-    public static function enter($isAplly = false){
-        if (!$isAplly){
+    public static function enter($isAuto = false){
+        if ($isAuto){
+            WaitProcessing::sleep(1);
+            echo "\n";
             return;
         }
-        echo "EnterKeyを押してください";
         fgets(STDIN);
     }
 

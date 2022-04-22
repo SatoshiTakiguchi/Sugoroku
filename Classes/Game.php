@@ -54,20 +54,38 @@ class Game{
         }
     }
 
+    // マップ表示
+    public function printBoardAndPlayerPosition(){
+        $all_player_list = array_merge($this->player_list, $this->goal_players);
+        $player_position_list = [];
+        foreach($all_player_list as $player){
+            $player_position_list[$player->getName()] = $player->getPosition();
+        }
+        foreach($this->square_list as $squere_number => $effect){
+            WaitProcessing::sleep(0.1);
+            echo $effect;
+            if($mach_player_list = array_keys($player_position_list,$squere_number)){
+                $str = implode(" ",$mach_player_list);
+                print " ".$str;
+            }
+            echo "\n";
+        }
+        echo "\n";
+    }
+
     // スタート
     public function start(){
         while($this->player_list){
             foreach($this->player_list as $player){
-                echo $player->getName(),"の番\n";
-                $player->printToGoal($this);
                 // 休み処理
                 if($player->getPenaltyTurn()){
-                    $player->action();
+                    $player->action($this);
                     echo "\n";
+                    $player->confirmEnd();
                     continue;
                 }
                 //行動
-                $player->action($this->player_list);
+                $player->action($this);
 
                 // ゴール判定
                 $position = $player->getPosition();
@@ -93,6 +111,7 @@ class Game{
                 // ゴールまでいくつか
                 $player->printToGoal($this);
                 echo "\n";
+                $player->confirmEnd();
             }
         }
         $this->printResult();
