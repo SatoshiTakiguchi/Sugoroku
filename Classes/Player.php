@@ -70,11 +70,13 @@ class Player{
             $this->item_list[] = $item;
         }
 
+    // 行動リスト表示
     private function printActionList(){
         echo "0:サイコロを振る\n";
         echo "1:アイテムを使用する\n";
     }
 
+    // アイテムリスト表示
     private function printItemList(){
         echo "\n使用するアイテムを選んでください。\n";
         for($num = 0; $num < count($this->item_list); $num++){
@@ -85,6 +87,7 @@ class Player{
         echo count($this->item_list),":行動選択にもどる\n";
     }
 
+    // アイテム選択処理
     private function selectItemNumber(){
         while(true){
             $this->printItemList();
@@ -107,13 +110,7 @@ class Player{
         }
     }
 
-    private function useItem($item_key,$player_list){
-        $item = $this->item_list[(int)$item_key];
-        echo $item->getName(),"を使った\n";
-        Ivent::apply($player_list, $this, $item->getIvent());
-        array_splice($this->item_list,$item_key,1);
-    }
-
+    // 行動
     public function action($player_list){
         $this->action_num += 1;
         // 休み処理
@@ -126,6 +123,7 @@ class Player{
         // 行動リスト表示
         while (true){
             $this->printActionList();
+            // オート操作処理
             if(!$this->isAuto){
                 $action_number = fgets(STDIN);   
             }else{
@@ -155,6 +153,14 @@ class Player{
         }
     }
 
+    // ゴールまでのマス数
+    public function printToGoal($game){
+        $goal_square = $game->getGoalSquare();
+        echo "ゴールまで",$goal_square-$this->getPosition(),"マス\n";
+        WaitProcessing::sleep(0.5);
+    }
+
+    // サイコロ
     public function dice(){
         echo "サイコロを振った。\n";
         WaitProcessing::sleep(0.5);
@@ -164,6 +170,14 @@ class Player{
         echo $dice_res,"進む。\n";
         WaitProcessing::sleep(0.5);
         $this->addPosition($dice_res);
+    }
+
+    // アイテム
+    private function useItem($item_key,$player_list){
+        $item = $this->item_list[(int)$item_key];
+        echo $item->getName(),"を使った\n";
+        Ivent::apply($player_list, $this, $item->getIvent());
+        array_splice($this->item_list,$item_key,1);
     }
 
 }

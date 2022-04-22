@@ -4,8 +4,8 @@ require_once 'Classes/WaitProcessing.php';
 require_once 'Classes/Ivent.php';
 
 class Game{
-    private $board_instance;
     private $square_list;
+    private $goal_square;
     private $player_list = [];
     private $goal_players = [];
 
@@ -14,15 +14,28 @@ class Game{
         $this->player_list[] = $player;
     }
     public function setBoard($board){
-        $this->board_instance = $board;
         $this->square_list = $board->getBorad();
+        $this->goal_square = count($this->square_list) - 1;
     }
+
+    // データ取得関数
+        public function getGoalSquare(){
+            return $this->goal_square;
+        }
+        public function getPlayerList(){
+            return $this->player_list;
+        }
+        public function getGoalPlayers(){
+            return $this->goal_players;
+        }
+        public function getSquareList(){
+            return $this->square_list;
+        }
 
     // 結果入力
     private function resultProcessiong($player){
         $this->goal_players[] = $player;
-        $goal_position = count($this->square_list);
-        $player->setPosition($goal_position);
+        $player->setPosition($this->goal_square);
         echo "{$player->getName()}はゴールした\n";
         // player_listから削除
         array_splice(
@@ -41,20 +54,12 @@ class Game{
         }
     }
 
-    // ゴールまでのマス数
-    private function printToGoal($player){
-        $goal_position = count($this->square_list) - 1;
-        echo "ゴールまで",$goal_position-$player->getPosition(),"マス\n";
-        WaitProcessing::sleep(0.5);
-    }
-
+    // スタート
     public function start(){
-        // ゴール位置取得
-        $goal_position = count($this->square_list) - 1;
         while($this->player_list){
             foreach($this->player_list as $player){
                 echo $player->getName(),"の番\n";
-                $this->printToGoal($player);
+                $player->printToGoal($this);
                 // 休み処理
                 if($player->getPenaltyTurn()){
                     $player->action();
@@ -66,27 +71,27 @@ class Game{
 
                 // ゴール判定
                 $position = $player->getPosition();
-                if($goal_position <= $position){
+                if($this->goal_square <= $position){
                     $this->resultProcessiong($player);
                     echo "\n";
                     continue;
                 }
 
                 // 止まったマス処理
-                $square = $this->square_list[$position];
-                echo $square,"マスに止まった\n";
-                Ivent::apply($this->player_list,$player,$square);
+                $square_effect = $this->square_list[$position];
+                echo $square_effect,"マスに止まった\n";
+                Ivent::apply($this,$player,$square_effect);
 
                 // ゴール判定
                 $position = $player->getPosition();
-                if($goal_position <= $position){
+                if($this->goal_square <= $position){
                     $this->resultProcessiong($player);
                     echo "\n";
                     continue;
                 }
 
                 // ゴールまでいくつか
-                $this->printToGoal($player);
+                $player->printToGoal($this);
                 echo "\n";
             }
         }
