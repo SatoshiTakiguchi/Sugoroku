@@ -8,9 +8,12 @@ class Ivent{
     public static function apply($game,$player,$square_effect){
         // 
         if(preg_match("/指定した人/",$square_effect)){
-            echo "mach\n";
-            print_r($game->selectOtherPlayer($player));
-            sleep(10);
+            $target_player = ($game->selectOtherPlayer($player));
+            preg_match("/[0-9]+ターン休/", $square_effect, $penalty_turn_str);
+            $penalty_turn = (int)str_replace("ターン休","",$penalty_turn_str[0]);
+            Ivent::addPrenaltyTurn($target_player, $penalty_turn);
+            // 使用後ターンを終えるかどうか
+            return true;
         }
         // すすむマス
         elseif(preg_match("/[0-9]+マスすすむ/",$square_effect)){
@@ -27,10 +30,11 @@ class Ivent{
         // アイテムマス
         elseif($square_effect == "アイテム"){
             Ivent::recieveItem($player);
+            return false;
         }
         // ペナルティターンマス
-        elseif(preg_match("/[0-9]+回やすみ/",$square_effect)){
-            $number = (int)str_replace("回やすみ","",$square_effect);
+        elseif(preg_match("/[0-9]+ターンやすみ/",$square_effect)){
+            $number = (int)str_replace("ターンやすみ","",$square_effect);
             Ivent::addPrenaltyTurn($player,$number);
         }
         // 何もなしマス（例外なマスも）
@@ -40,11 +44,11 @@ class Ivent{
         
     }
 
-    // 何もなしマス
+    // 何もなし
     public static function nothing(){
         echo "何もなし\n";
     }
-    // アイテムマス
+    // アイテム
     public static function recieveItem($player){
         WaitProcessing::sleep(0.5);
         $item = new Item();
@@ -54,7 +58,7 @@ class Ivent{
         echo "使うと",$item->getIvent(),"効果がある\n";
         WaitProcessing::sleep(0.4);
     }
-    // 単純移動マス
+    // 単純移動
     public static function addPlayerPosition($plyaer,$number){
         WaitProcessing::sleep(0.5);
         echo $number,"マスすすむ。\n";
@@ -65,7 +69,7 @@ class Ivent{
         echo $number,"マスもどる。\n";
         $player->addPosition(-$number);
     }
-    // ペナルティターンマス
+    // ペナルティターン
     public static function addPrenaltyTurn($player,$penalty_turn){
         WaitProcessing::sleep(0.5);
         echo $player->getName(),"さんは",$penalty_turn,"ターン動けなくなった。\n";

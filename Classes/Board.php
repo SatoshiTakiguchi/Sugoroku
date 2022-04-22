@@ -9,8 +9,8 @@ class Board{
         "3マスすすむ",
         "1マスもどる",
         "アイテム",
-        "1回やすみ",
-        "2回やすみ",
+        "1ターンやすみ",
+        "2ターンやすみ",
     ];
 
     public static function createRandomBoad($data_path = 'data/board1.csv'){

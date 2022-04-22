@@ -42,8 +42,10 @@ class Game{
             echo "指定する人を番号で選択してください\n";
             $selected_key = fgets(STDIN);
 
+            // 選択の整合性確認
             if(!PlayerInput::inputCheck($this->player_list,$selected_key)){continue;}
 
+            // プレイヤー確認
             $selected_key = (int)$selected_key;
             if(WaitProcessing::submit($this->player_list[$selected_key]->getName()."さん")){
                 return $this->player_list[$selected_key];
@@ -110,7 +112,13 @@ class Game{
                     continue;
                 }
                 //行動
-                $player->action($this);
+                if($player->action($this)){
+                    // ゴールまでいくつか
+                    $player->printToGoal($this);
+                    echo "\n";
+                    $player->confirmEnd();
+                    continue;
+                }
 
                 // ゴール判定
                 $position = $player->getPosition();

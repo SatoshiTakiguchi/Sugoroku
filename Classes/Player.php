@@ -96,7 +96,7 @@ class Player{
     // ゴールまでのマス数表示
     public function printToGoal($game){
         $goal_square = $game->getGoalSquare();
-        echo "ゴールまで",$goal_square-$this->getPosition(),"マス\n";
+        echo $this->name,"さん、ゴールまで",$goal_square-$this->getPosition(),"マス\n";
         WaitProcessing::sleep(0.5);
     }
 
@@ -142,8 +142,8 @@ class Player{
         private function useItem($item_key,$game){
             $item = $this->item_list[(int)$item_key];
             echo $item->getName(),"を使った\n";
-            Ivent::apply($game, $this, $item->getIvent());
             array_splice($this->item_list,$item_key,1);
+            return Ivent::apply($game, $this, $item->getIvent());
         }
         // マップ確認
         private function printMap($game){
@@ -194,8 +194,8 @@ class Player{
                         continue 2;
                     }
                     // アイテム使用
-                    $this->useItem($item_key,$game);
-                    break 2;
+                    // 使用後ターンを終えるかどうかを返す
+                    return $this->useItem($item_key,$game);
 
                 // マップ確認
                 case 2:
