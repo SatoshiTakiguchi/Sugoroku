@@ -5,9 +5,10 @@ require_once 'Classes/Ivent.php';
 class Item{
 
     private static $ivent_list  = [
-        '自動車'   => "3マスすすむ",
-        '新幹線'   => "4マスすすむ",
-        'ロケット' => "5マスすすむ",
+        // '自動車' => "3マスすすむ",
+        // '新幹線' => "4マスすすむ",
+        // '飛行機' => "5マスすすむ",
+        '指定' => "指定した人を",
     ];
     private $name;
     private $ivent;

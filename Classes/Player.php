@@ -4,6 +4,7 @@ require_once 'Classes/Dice.php';
 require_once 'Classes/WaitProcessing.php';
 require_once 'Classes/Item.php';
 require_once 'Classes/Ivent.php';
+require_once 'Classes/PlayerInput.php';
 
 class Player{
     private $name;
@@ -23,7 +24,7 @@ class Player{
         $this->position = 0;
         $this->action_num = 0;
         $this->isAuto = $isAuto;
-        $this->penalty_turn = 2;
+        $this->penalty_turn = 0;
         $this->item_list = [];
     }
 
@@ -72,14 +73,18 @@ class Player{
     //
     // 行動リスト表示
     private function printActionList(){
+        WaitProcessing::sleep(0.2);
         echo "0:サイコロを振る\n";
+        WaitProcessing::sleep(0.2);
         echo "1:アイテムを使用する\n";
+        WaitProcessing::sleep(0.2);
         echo "2:マップの表示\n";
+        WaitProcessing::sleep(0.2);
     }
 
     // アイテムリスト表示
     private function printItemList(){
-        echo "\n使用するアイテムを選んでください。\n";
+        echo "使用するアイテムを選んでください。\n";
         for($num = 0; $num < count($this->item_list); $num++){
             $item = $this->item_list[$num];
             echo "{$num}:{$item->getName()}";
@@ -99,22 +104,19 @@ class Player{
     private function selectItemNumber(){
         while(true){
             $this->printItemList();
-            $item_key = fgets(STDIN);
+            $item_key = trim(fgets(STDIN));
             // 選択しなおしを返す
             if($item_key == count($this->item_list)){
                 return $item_key;
             }
 
+            if(!PlayerInput::inputCheck($this->item_list,$item_key)){continue;}
+            
             // 確認して値を返す
-            if($item_key < count($this->item_list)){
-                if(WaitProcessing::submit($item_key)){
-                    return $item_key;        
-                }
-                continue;
+            if(WaitProcessing::submit($item_key)){
+                return (int)$item_key;        
             }
-
-            WaitProcessing::sleep(0.2);
-            echo "指定された数字を入力してください。\n";
+            continue;
         }
     }
 
@@ -124,7 +126,7 @@ class Player{
         WaitProcessing::enter($this->isAuto);
     }
 
-    // アクション
+    // アクション関数
         // サイコロ
         public function dice(){
             echo "サイコロを振った。\n";
@@ -137,10 +139,10 @@ class Player{
             $this->addPosition($dice_res);
         }
         // アイテム
-        private function useItem($item_key,$player_list){
+        private function useItem($item_key,$game){
             $item = $this->item_list[(int)$item_key];
             echo $item->getName(),"を使った\n";
-            Ivent::apply($player_list, $this, $item->getIvent());
+            Ivent::apply($game, $this, $item->getIvent());
             array_splice($this->item_list,$item_key,1);
         }
         // マップ確認
@@ -155,23 +157,27 @@ class Player{
         $player_list = $game->getPlayerList();
         $this->action_num += 1;
         while (true){
-            echo $this->name,"さんの番\n";
+            echo $this->name,"さんの番 ";
+            WaitProcessing::sleep(0.2);
+            // ゴールまでのマス数
+            $this->printToGoal($game);
             // 休み処理
             if($this->penalty_turn){
                 echo "{$this->name}は{$this->penalty_turn}回休み\n";
                 $this->penalty_turn -= 1;
                 break;
             }
-            // ゴールまでのマス数
-            $this->printToGoal($game);
             // 行動リスト表示
             $this->printActionList();
+            echo "番号を選んでエンターを押してください\n";
             // オート操作処理
             if($this->isAuto){
+                WaitProcessing::sleep(0.5);
                 $this->dice();
                 break;   
             }
-            $action_number = fgets(STDIN);
+            // 行動
+            $action_number = trim(fgets(STDIN));
             switch ($action_number){
                 // サイコロ
                 case 0:
@@ -188,14 +194,19 @@ class Player{
                         continue 2;
                     }
                     // アイテム使用
-                    $this->useItem($item_key,$player_list);
+                    $this->useItem($item_key,$game);
                     break 2;
 
                 // マップ確認
                 case 2:
                     $this->printMap($game);
                     continue 2;
+                // 例外
+                default:
+                    echo "表示された番号を選んでください\n";
+                //
             }
+            // 
         }
     }
 }

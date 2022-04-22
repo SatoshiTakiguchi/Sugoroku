@@ -7,7 +7,10 @@ class Board{
         "1マスすすむ",
         "2マスすすむ",
         "3マスすすむ",
-        "1マスもどる"
+        "1マスもどる",
+        "アイテム",
+        "1回やすみ",
+        "2回やすみ",
     ];
 
     public static function createRandomBoad($data_path = 'data/board1.csv'){

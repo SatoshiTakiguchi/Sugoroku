@@ -31,7 +31,25 @@ class Game{
         public function getSquareList(){
             return $this->square_list;
         }
+    // 
+    // プレイヤー指定
+    public function selectOtherPlayer($selecter_player){
+        while(true){
+            foreach($this->player_list as $key => $player){
+                if($player == $selecter_player){continue;}
+                echo $key,":",$player->getName(),"\n";
+            }
+            echo "指定する人を番号で選択してください\n";
+            $selected_key = fgets(STDIN);
 
+            if(!PlayerInput::inputCheck($this->player_list,$selected_key)){continue;}
+
+            $selected_key = (int)$selected_key;
+            if(WaitProcessing::submit($this->player_list[$selected_key]->getName()."さん")){
+                return $this->player_list[$selected_key];
+            }
+        }
+    }
     // 結果入力
     private function resultProcessiong($player){
         $this->goal_players[] = $player;
@@ -61,6 +79,8 @@ class Game{
         foreach($all_player_list as $player){
             $player_position_list[$player->getName()] = $player->getPosition();
         }
+        echo "-------マップ-------\n";
+        WaitProcessing::sleep(0.1);
         foreach($this->square_list as $squere_number => $effect){
             WaitProcessing::sleep(0.1);
             echo $effect;
@@ -75,6 +95,11 @@ class Game{
 
     // スタート
     public function start(){
+        echo "ゲームを開始します\n";
+        WaitProcessing::sleep(0.5);
+        echo "今回のマップは\n";
+        WaitProcessing::sleep(0.5);
+        $this->printBoardAndPlayerPosition();
         while($this->player_list){
             foreach($this->player_list as $player){
                 // 休み処理

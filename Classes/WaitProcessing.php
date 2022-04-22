@@ -2,7 +2,7 @@
 
 class WaitProcessing{
 
-    public static function sleep($time,$isAplly = false){
+    public static function sleep($time,$isAplly = true){
         if (!$isAplly){
             return;
         }
@@ -19,8 +19,8 @@ class WaitProcessing{
         fgets(STDIN);
     }
 
-    public static function submit($number){
-        echo "\n{$number}でよろしいですか\n";
+    public static function submit($selected_word){
+        echo "\n{$selected_word}でよろしいですか\n";
         echo "5:大丈夫\n";
         echo "5以外:やり直す\n";
         $flag = fgets(STDIN);
@@ -28,6 +28,7 @@ class WaitProcessing{
         if($flag == 5){
             return true;
         }
+        echo "やり直します\n";
         return false;
     }
 }
