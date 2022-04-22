@@ -46,7 +46,7 @@ class Player{
         public function getItemList(){
             return $this->item_list;
         }
-
+    //
     // データ変更関数
         public function setPosition($num){
             $this->position = $num;
@@ -69,7 +69,7 @@ class Player{
         public function addItem($item){
             $this->item_list[] = $item;
         }
-
+    //
     // 行動リスト表示
     private function printActionList(){
         echo "0:サイコロを振る\n";
@@ -124,31 +124,32 @@ class Player{
         WaitProcessing::enter($this->isAuto);
     }
 
-    // サイコロ
-    public function dice(){
-        echo "サイコロを振った。\n";
-        WaitProcessing::sleep(0.5);
-        $dice_res = $this->dice->diceRoll();
-        echo $dice_res,"が出た！\n";
-        WaitProcessing::sleep(0.5);
-        echo $dice_res,"進む。\n";
-        WaitProcessing::sleep(0.5);
-        $this->addPosition($dice_res);
-    }
-    // アイテム
-    private function useItem($item_key,$player_list){
-        $item = $this->item_list[(int)$item_key];
-        echo $item->getName(),"を使った\n";
-        Ivent::apply($player_list, $this, $item->getIvent());
-        array_splice($this->item_list,$item_key,1);
-    }
-    // マップ確認
-    private function printMap($game){
-        $game->printBoardAndPlayerPosition();
-        echo "エンターを押して行動選択に戻る\n";
-        WaitProcessing::enter($this->isAuto);
-    }
-
+    // アクション
+        // サイコロ
+        public function dice(){
+            echo "サイコロを振った。\n";
+            WaitProcessing::sleep(0.5);
+            $dice_res = $this->dice->diceRoll();
+            echo $dice_res,"が出た！\n";
+            WaitProcessing::sleep(0.5);
+            echo $dice_res,"進む。\n";
+            WaitProcessing::sleep(0.5);
+            $this->addPosition($dice_res);
+        }
+        // アイテム
+        private function useItem($item_key,$player_list){
+            $item = $this->item_list[(int)$item_key];
+            echo $item->getName(),"を使った\n";
+            Ivent::apply($player_list, $this, $item->getIvent());
+            array_splice($this->item_list,$item_key,1);
+        }
+        // マップ確認
+        private function printMap($game){
+            $game->printBoardAndPlayerPosition();
+            echo "エンターを押して行動選択に戻る\n";
+            WaitProcessing::enter($this->isAuto);
+        }
+    //
     // 行動
     public function action($game){
         $player_list = $game->getPlayerList();
@@ -190,6 +191,7 @@ class Player{
                     $this->useItem($item_key,$player_list);
                     break 2;
 
+                // マップ確認
                 case 2:
                     $this->printMap($game);
                     continue 2;
