@@ -32,6 +32,11 @@ class Game{
             return $this->square_list;
         }
     // 
+    // セーブロード
+    public function saveGame(){
+
+    }
+    //
     // プレイヤー指定
     public function selectOtherPlayer($selecter_player){
         while(true){
@@ -67,10 +72,20 @@ class Game{
 
     // 結果出力
     private function printResult(){
-        $i = 1;
+        $last_goal_turn = end($this->goal_players)->getActionNum();
         foreach($this->goal_players as $player){
-            echo $i,"位:",$player->getName(),"\n行動回数:",$player->getActionNum(),"\n";
-            $i+=1;
+            $bonus_point = $last_goal_turn - $player->getActionNum();
+            $player->addVictoryPoint($bonus_point);
+
+            $item_point = count($player->getItemList());
+            $player->addVictoryPoint($item_point);
+
+            echo $player->getName(),"さん\n";
+            echo "持ち点",$player->getVictoryPoint(),"点\n";
+            echo "行動回数ボーナス",$bonus_point,"点\n";
+            echo "アイテム未使用ボーナス",$item_point,"点\n";
+            echo "合計",$player->getVictoryPoint(),"点\n";
+            echo "\n";
         }
     }
 
@@ -102,8 +117,12 @@ class Game{
     // 部分マップ表示
     public function printPartOfMap($player_position, $end_number = 10){
         $player_position_list = $this->createPositionList();
+        $end_number = $end_number + $player_position;
         echo "-------周辺マップ-------\n";
         for($i = $player_position; $i < $end_number; $i++){
+
+            if($i > $this->goal_square){break;}
+
             WaitProcessing::sleep(0.1);
             echo $this->square_list[$i];
             if($mach_player_list = array_keys($player_position_list,$i)){
@@ -115,6 +134,13 @@ class Game{
         echo "\n";
 
     }
+    // 勝利点一覧
+    public function printVictoryPoint(){
+        foreach($this->player_list as $player){
+            echo $player->getName(),"さん:",$player->getVictoryPoint(),"点\n";
+        }
+        echo "\n";
+    }
 
     // スタート
     public function start(){
@@ -123,7 +149,7 @@ class Game{
         echo "今回のマップは\n";
         WaitProcessing::sleep(0.5);
         $this->printAllMap();
-        
+
         while($this->player_list){
             foreach($this->player_list as $player){
                 // 休み処理

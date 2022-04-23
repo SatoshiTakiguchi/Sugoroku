@@ -10,10 +10,11 @@ class Player{
     private $name;
     private $dice;
     private $position;
-    private $action_num;
+    private $action_num;   // 行動回数
     private $isAuto;
     private $penalty_turn;
     private $item_list;
+    private $victory_point;
 
     public function __construct(
         $name,
@@ -21,11 +22,12 @@ class Player{
     ){
         $this->name = $name;
         $this->dice = new Dice();
-        $this->position = 0;
-        $this->action_num = 0;
+        $this->position = 0;       
+        $this->action_num = 0;     
         $this->isAuto = $isAuto;
-        $this->penalty_turn = 0;
+        $this->penalty_turn = 0;   
         $this->item_list = [];
+        $this->victory_point = 0;
     }
 
     // データ取得関数
@@ -46,6 +48,9 @@ class Player{
         }
         public function getItemList(){
             return $this->item_list;
+        }
+        public function getVictoryPoint(){
+            return $this->victory_point;
         }
     //
     // データ変更関数
@@ -70,6 +75,9 @@ class Player{
         public function addItem($item){
             $this->item_list[] = $item;
         }
+        public function addVictoryPoint($number){
+            $this->victory_point += $number;
+        }
     //
     // 行動リスト表示
     private function printActionList(){
@@ -79,6 +87,8 @@ class Player{
         echo "1:アイテムを使用する\n";
         WaitProcessing::sleep(0.2);
         echo "2:マップの表示\n";
+        WaitProcessing::sleep(0.2);
+        echo "3:ポイント獲得状況\n";
         WaitProcessing::sleep(0.2);
     }
 
@@ -154,8 +164,10 @@ class Player{
             switch($key){
                 case 0:
                     $game->printAllMap();
+                    return;
                 case 1:
                     $game->printPartOfMap($this->position);
+                    return;
                 default:
                     return;
             }
@@ -211,6 +223,10 @@ class Player{
                 // マップ確認
                 case 2:
                     $this->printMap($game);
+                    continue 2;
+                //
+                case 3:
+                    $game->printVictoryPoint();
                     continue 2;
                 // 例外
                 default:

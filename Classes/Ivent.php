@@ -6,7 +6,7 @@ require_once 'Classes/Item.php';
 class Ivent{
 
     public static function apply($game,$player,$square_effect){
-        // 
+        // プレイヤー指定アイテム(今のところ休ませるのみ)
         if(preg_match("/指定した人/",$square_effect)){
             $target_player = ($game->selectOtherPlayer($player));
             preg_match("/[0-9]+ターン休/", $square_effect, $penalty_turn_str);
@@ -36,6 +36,13 @@ class Ivent{
         elseif(preg_match("/[0-9]+ターンやすみ/",$square_effect)){
             $number = (int)str_replace("ターンやすみ","",$square_effect);
             Ivent::addPrenaltyTurn($player,$number);
+        }
+        // ポイント獲得
+        elseif(preg_match("/[0-9]+ポイント獲得/",$square_effect)){
+            $number = (int)str_replace("ポイント獲得","",$square_effect);
+            Ivent::addVictoryPoint($player,$number);
+            // アイテムの場合ターン終了
+            return true;
         }
         // 何もなしマス（例外なマスも）
         else{
@@ -74,6 +81,12 @@ class Ivent{
         WaitProcessing::sleep(0.5);
         echo $player->getName(),"さんは",$penalty_turn,"ターン動けなくなった。\n";
         $player->addPenaltyTurn($penalty_turn);
+    }
+    // ポイント獲得
+    public static function addVictoryPoint($player,$number){
+        WaitProcessing::sleep(0.5);
+        echo $player->getName(),"さんは",$number,"ポイント獲得\n";
+        $player->addVictoryPoint($number);
     }
 
 }
