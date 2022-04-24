@@ -30,6 +30,13 @@ class Player{
         $this->victory_point = 0;
     }
 
+    // array_column
+    public function __get($prop){
+        return $this->$prop;
+    }
+    public function __isset($prop){
+        return isset($this->$prop);
+    }
     // データ取得関数
         public function getName(){
             return $this->name;
@@ -106,7 +113,7 @@ class Player{
     // ゴールまでのマス数表示
     public function printToGoal($game){
         $goal_square = $game->getGoalSquare();
-        echo $this->name,"さん、ゴールまで",$goal_square-$this->getPosition(),"マス\n";
+        echo $goal_square-$this->getPosition(),"マス\n";
         WaitProcessing::sleep(0.5);
     }
 

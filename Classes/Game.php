@@ -72,6 +72,11 @@ class Game{
 
     // 結果出力
     private function printResult(){
+        echo "全員がゴールした\n";
+        WaitProcessing::sleep(1);
+        echo "点数発表\n";
+        WaitProcessing::sleep(2);
+        // 点数計算
         $last_goal_turn = end($this->goal_players)->getActionNum();
         foreach($this->goal_players as $player){
             $bonus_point = $last_goal_turn - $player->getActionNum();
@@ -81,11 +86,25 @@ class Game{
             $player->addVictoryPoint($item_point);
 
             echo $player->getName(),"さん\n";
+            WaitProcessing::sleep(1);
             echo "持ち点",$player->getVictoryPoint(),"点\n";
+            WaitProcessing::sleep(1);
             echo "行動回数ボーナス",$bonus_point,"点\n";
+            WaitProcessing::sleep(1);
             echo "アイテム未使用ボーナス",$item_point,"点\n";
+            WaitProcessing::sleep(1.5);
             echo "合計",$player->getVictoryPoint(),"点\n";
             echo "\n";
+        }
+        
+        // 並び替え
+        $positions = array_column($this->goal_players,'victory_point');
+        array_multisort($positions, SORT_DESC, $this->goal_players);
+        
+        //
+        foreach($this->goal_players as $key => $player){
+            WaitProcessing::sleep(1);
+            echo $key+1,"位:",$player->name,"さん ",$player->victory_point,"\n";
         }
     }
 
@@ -190,11 +209,13 @@ class Game{
                 }
 
                 // ゴールまでいくつか
+                echo $player->name,"さん、ゴールまで";
                 $player->printToGoal($this);
                 echo "\n";
                 $player->confirmEnd();
             }
         }
+        WaitProcessing::sleep(2);
         $this->printResult();
     }
 }

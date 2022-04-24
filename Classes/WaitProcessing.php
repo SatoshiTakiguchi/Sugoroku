@@ -2,7 +2,7 @@
 
 class WaitProcessing{
 
-    public static function sleep($time,$isAplly = false){
+    public static function sleep($time,$isAplly = true){
         if (!$isAplly){
             return;
         }
