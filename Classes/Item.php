@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Classes/Ivent.php';
+require_once 'Classes/Event.php';
 
 class Item{
 
@@ -25,7 +25,7 @@ class Item{
     public function getName(){
         return $this->name;
     }
-    public function getIvent(){
+    public function getEvent(){
         return $this->ivent;
     }
 

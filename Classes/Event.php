@@ -3,7 +3,7 @@
 require_once 'Classes/WaitProcessing.php';
 require_once 'Classes/Item.php';
 
-class Ivent{
+class Event{
 
     public static function apply($game,$player,$square_effect){
         // プレイヤー指定アイテム(今のところ休ませるのみ)
@@ -11,7 +11,7 @@ class Ivent{
             $target_player = ($game->selectOtherPlayer($player));
             preg_match("/[0-9]+ターン休/", $square_effect, $penalty_turn_str);
             $penalty_turn = (int)str_replace("ターン休","",$penalty_turn_str[0]);
-            Ivent::addPrenaltyTurn($target_player, $penalty_turn);
+            Event::addPrenaltyTurn($target_player, $penalty_turn);
             // 使用後ターンを終えるかどうか
             return true;
         }
@@ -19,34 +19,34 @@ class Ivent{
         elseif(preg_match("/[0-9]+マスすすむ/",$square_effect)){
             // 数値抽出
             $number = (int)str_replace("マスすすむ","",$square_effect);
-            Ivent::addPlayerPosition($player,$number);
+            Event::addPlayerPosition($player,$number);
         }
         // もどるマス
         elseif(preg_match("/[0-9]+マスもどる/",$square_effect)){
             // 数値抽出
             $number = (int)str_replace("マス戻る","",$square_effect);
-            Ivent::reducePlayerPosition($player,$number);
+            Event::reducePlayerPosition($player,$number);
         }
         // アイテムマス
         elseif($square_effect == "アイテム"){
-            Ivent::recieveItem($player);
+            Event::recieveItem($player);
             return false;
         }
         // ペナルティターンマス
         elseif(preg_match("/[0-9]+ターンやすみ/",$square_effect)){
             $number = (int)str_replace("ターンやすみ","",$square_effect);
-            Ivent::addPrenaltyTurn($player,$number);
+            Event::addPrenaltyTurn($player,$number);
         }
         // ポイント獲得
         elseif(preg_match("/[0-9]+ポイント獲得/",$square_effect)){
             $number = (int)str_replace("ポイント獲得","",$square_effect);
-            Ivent::addVictoryPoint($player,$number);
+            Event::addVictoryPoint($player,$number);
             // アイテムの場合ターン終了
             return true;
         }
         // 何もなしマス（例外なマスも）
         else{
-            Ivent::nothing();
+            Event::nothing();
         }
         
     }
@@ -62,14 +62,14 @@ class Ivent{
         $player->addItem($item);
         echo $item->getName(),"を獲得した！\n";
         WaitProcessing::sleep(0.4);
-        echo "使うと",$item->getIvent(),"効果がある\n";
+        echo "使うと",$item->getEvent(),"効果がある\n";
         WaitProcessing::sleep(0.4);
     }
     // 単純移動
-    public static function addPlayerPosition($plyaer,$number){
+    public static function addPlayerPosition($player,$number){
         WaitProcessing::sleep(0.5);
         echo $number,"マスすすむ。\n";
-        $plyaer->addPosition($number);
+        $player->addPosition($number);
     }
     public static function reducePlayerPosition($player,$number){
         WaitProcessing::sleep(0.5);

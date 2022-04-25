@@ -30,7 +30,7 @@ class Board{
     }
 
     // データ取得関数
-    public function getBorad(){
+    public function getBoard(){
         return $this->square_list;
     }
 

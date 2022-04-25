@@ -3,7 +3,7 @@
 require_once 'Classes/Dice.php';
 require_once 'Classes/WaitProcessing.php';
 require_once 'Classes/Item.php';
-require_once 'Classes/Ivent.php';
+require_once 'Classes/Event.php';
 require_once 'Classes/PlayerInput.php';
 
 class Player{
@@ -105,7 +105,7 @@ class Player{
         for($num = 0; $num < count($this->item_list); $num++){
             $item = $this->item_list[$num];
             echo "{$num}:{$item->getName()}";
-            echo "(効果){$item->getIvent()}\n";
+            echo "(効果){$item->getEvent()}\n";
         }
         echo count($this->item_list),":行動選択にもどる\n";
     }
@@ -160,7 +160,7 @@ class Player{
             $item = $this->item_list[(int)$item_key];
             echo $item->getName(),"を使った\n";
             array_splice($this->item_list,$item_key,1);
-            return Ivent::apply($game, $this, $item->getIvent());
+            return Event::apply($game, $this, $item->getEvent());
         }
         // マップ確認
         private function printMap($game){

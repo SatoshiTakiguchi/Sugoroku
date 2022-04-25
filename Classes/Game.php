@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Classes/WaitProcessing.php';
-require_once 'Classes/Ivent.php';
+require_once 'Classes/Event.php';
 
 class Game{
     private $square_list;
@@ -14,7 +14,7 @@ class Game{
         $this->player_list[] = $player;
     }
     public function setBoard($board){
-        $this->square_list = $board->getBorad();
+        $this->square_list = $board->getBoard();
         $this->goal_square = count($this->square_list) - 1;
     }
 
@@ -198,7 +198,7 @@ class Game{
                 // 止まったマス処理
                 $square_effect = $this->square_list[$position];
                 echo $square_effect,"マスに止まった\n";
-                Ivent::apply($this,$player,$square_effect);
+                Event::apply($this,$player,$square_effect);
 
                 // ゴール判定
                 $position = $player->getPosition();
