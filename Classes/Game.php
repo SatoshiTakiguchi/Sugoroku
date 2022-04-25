@@ -72,8 +72,6 @@ class Game{
 
     // 結果出力
     private function printResult(){
-        echo "全員がゴールした\n";
-        WaitProcessing::sleep(1);
         echo "点数発表\n";
         WaitProcessing::sleep(2);
         // 点数計算
@@ -81,7 +79,7 @@ class Game{
         foreach($this->goal_players as $player){
             echo $player->getName(),"さん\n";
             WaitProcessing::sleep(1);
-            
+
             echo "持ち点",$player->getVictoryPoint(),"点\n";
             WaitProcessing::sleep(1);
 
@@ -171,8 +169,12 @@ class Game{
         WaitProcessing::sleep(0.5);
         $this->printAllMap();
 
+        $max_turn = 100;
         $turn = 1;
         while($this->player_list){
+            if($max_turn < $turn){
+                echo $max_turn,"ターンを超えました。終了します。\n";
+            }
             WaitProcessing::sleep(0.5);
             echo "～～第{$turn}ターン～～\n";
             WaitProcessing::sleep(0.5);
@@ -223,6 +225,8 @@ class Game{
             $turn += 1;
         }
         WaitProcessing::sleep(2);
+        echo "全員がゴールした\n";
+        WaitProcessing::sleep(1);
         $this->printResult();
     }
 }

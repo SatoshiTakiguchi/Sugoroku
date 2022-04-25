@@ -1,7 +1,7 @@
 <?php
 
 class Board{
-    private static $board_range = 30;
+    private static $board_range = 10;
     private static $square_src_list = [
         "何もなし",
         // "1マスすすむ",
@@ -12,7 +12,7 @@ class Board{
         // "1ターンやすみ",
         // "2ターンやすみ",
         "すすむ",
-        "休む",
+        "休み",
         "もどる",
     ];
 
