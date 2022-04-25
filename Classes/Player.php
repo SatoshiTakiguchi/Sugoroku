@@ -113,7 +113,7 @@ class Player{
     // ゴールまでのマス数表示
     public function printToGoal($game){
         $goal_square = $game->getGoalSquare();
-        echo $goal_square-$this->getPosition(),"マス\n";
+        echo "のこり",$goal_square-$this->getPosition(),"マス\n";
         WaitProcessing::sleep(0.5);
     }
 

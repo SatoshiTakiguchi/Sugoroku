@@ -79,20 +79,22 @@ class Game{
         // 点数計算
         $last_goal_turn = end($this->goal_players)->getActionNum();
         foreach($this->goal_players as $player){
+            echo $player->getName(),"さん\n";
+            WaitProcessing::sleep(1);
+            
+            echo "持ち点",$player->getVictoryPoint(),"点\n";
+            WaitProcessing::sleep(1);
+
             $bonus_point = $last_goal_turn - $player->getActionNum();
             $player->addVictoryPoint($bonus_point);
+            echo "行動回数ボーナス",$bonus_point,"点\n";
+            WaitProcessing::sleep(1);
 
             $item_point = count($player->getItemList());
             $player->addVictoryPoint($item_point);
-
-            echo $player->getName(),"さん\n";
-            WaitProcessing::sleep(1);
-            echo "持ち点",$player->getVictoryPoint(),"点\n";
-            WaitProcessing::sleep(1);
-            echo "行動回数ボーナス",$bonus_point,"点\n";
-            WaitProcessing::sleep(1);
             echo "アイテム未使用ボーナス",$item_point,"点\n";
             WaitProcessing::sleep(1.5);
+
             echo "合計",$player->getVictoryPoint(),"点\n";
             echo "\n";
         }
@@ -169,7 +171,11 @@ class Game{
         WaitProcessing::sleep(0.5);
         $this->printAllMap();
 
+        $turn = 1;
         while($this->player_list){
+            WaitProcessing::sleep(0.5);
+            echo "～～第{$turn}ターン～～\n";
+            WaitProcessing::sleep(0.5);
             foreach($this->player_list as $player){
                 // 休み処理
                 if($player->getPenaltyTurn()){
@@ -214,6 +220,7 @@ class Game{
                 echo "\n";
                 $player->confirmEnd();
             }
+            $turn += 1;
         }
         WaitProcessing::sleep(2);
         $this->printResult();
