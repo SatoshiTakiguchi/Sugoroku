@@ -4,7 +4,7 @@ require 'Classes/Dice.php';
 require 'Classes/Game.php';
 require 'Classes/Player.php';
 
-Board::createRandomBoad();
+Board::createRandomBoard();
 
 $game = new Game();
 $game->addPlayer(new Player("Taro",$isAuto=true));

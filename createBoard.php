@@ -2,7 +2,7 @@
 
 require_once 'Classes/Board.php';
 
-Board::createRandomBoad();
+Board::createRandomBoard();
 
 
 ?>

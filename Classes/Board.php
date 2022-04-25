@@ -4,16 +4,19 @@ class Board{
     private static $board_range = 30;
     private static $square_src_list = [
         "何もなし",
-        "1マスすすむ",
-        "2マスすすむ",
-        "3マスすすむ",
-        "1マスもどる",
+        // "1マスすすむ",
+        // "2マスすすむ",
+        // "3マスすすむ",
+        // "1マスもどる",
         "アイテム",
-        "1ターンやすみ",
-        "2ターンやすみ",
+        // "1ターンやすみ",
+        // "2ターンやすみ",
+        "すすむ",
+        "休む",
+        "もどる",
     ];
 
-    public static function createRandomBoad($data_path = 'data/board1.csv'){
+    public static function createRandomBoard($data_path = 'data/board1.csv'){
         $fp = fopen($data_path,'w');
         // CSV入力
         for($i = 0; $i < Board::$board_range; $i++){

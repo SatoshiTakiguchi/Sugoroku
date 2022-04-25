@@ -149,8 +149,6 @@ class Player{
             echo "サイコロを振った。\n";
             WaitProcessing::sleep(0.5);
             $dice_res = $this->dice->diceRoll();
-            echo $dice_res,"が出た！\n";
-            WaitProcessing::sleep(0.5);
             echo $dice_res,"進む。\n";
             WaitProcessing::sleep(0.5);
             $this->addPosition($dice_res);

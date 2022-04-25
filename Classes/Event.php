@@ -6,8 +6,48 @@ require_once 'Classes/Item.php';
 class Event{
 
     public static function apply($game,$player,$square_effect){
+        // 単純移動
+        if($square_effect == "すすむ"){
+            echo "サイコロの数だけ追加で進める\n";
+            WaitProcessing::sleep(0.5);
+            echo "エンターを押してサイコロを振ってください\n";
+            WaitProcessing::enter($player->isAuto);
+            $number = $player->dice->diceRoll();
+            Event::addPlayerPosition($player, $number);
+        }
+        elseif($square_effect == "もどる"){
+            echo "サイコロの数だけ戻らなければならない\n";
+            WaitProcessing::sleep(0.5);
+            echo "エンターを押してサイコロを振ってください\n";
+            WaitProcessing::enter($player->isAuto);
+            $number = $player->dice->diceRoll();
+            Event::reducePlayerPosition($player, $number);
+        }
+        // 休みマス
+        elseif($square_effect == "休み"){
+            $number = 1;
+            echo "1回休み\n";
+            Event::addPrenaltyTurn($player, $number);
+        }
+        // ポイント
+        elseif($square_effect == "ポイント"){
+            echo "サイコロの数だけポイントを獲得できる\n";
+            WaitProcessing::sleep(0.5);
+            echo "エンターを押してサイコロを振ってください\n";
+            WaitProcessing::enter($player->isAuto);
+            $number = $player->dice->diceRoll();
+            Event::addVictoryPoint($player,$number);
+            // アイテムの場合ターン終了
+            return true;
+        }
+
+        // アイテムマス
+        elseif($square_effect == "アイテム"){
+            Event::recieveItem($player);
+            return false;
+        }
         // プレイヤー指定アイテム(今のところ休ませるのみ)
-        if(preg_match("/指定した人/",$square_effect)){
+        elseif(preg_match("/指定した人/",$square_effect)){
             $target_player = ($game->selectOtherPlayer($player));
             preg_match("/[0-9]+ターン休/", $square_effect, $penalty_turn_str);
             $penalty_turn = (int)str_replace("ターン休","",$penalty_turn_str[0]);
@@ -15,35 +55,33 @@ class Event{
             // 使用後ターンを終えるかどうか
             return true;
         }
-        // すすむマス
-        elseif(preg_match("/[0-9]+マスすすむ/",$square_effect)){
-            // 数値抽出
-            $number = (int)str_replace("マスすすむ","",$square_effect);
-            Event::addPlayerPosition($player,$number);
-        }
-        // もどるマス
-        elseif(preg_match("/[0-9]+マスもどる/",$square_effect)){
-            // 数値抽出
-            $number = (int)str_replace("マス戻る","",$square_effect);
-            Event::reducePlayerPosition($player,$number);
-        }
-        // アイテムマス
-        elseif($square_effect == "アイテム"){
-            Event::recieveItem($player);
-            return false;
-        }
-        // ペナルティターンマス
-        elseif(preg_match("/[0-9]+ターンやすみ/",$square_effect)){
-            $number = (int)str_replace("ターンやすみ","",$square_effect);
-            Event::addPrenaltyTurn($player,$number);
-        }
-        // ポイント獲得
-        elseif(preg_match("/[0-9]+ポイント獲得/",$square_effect)){
-            $number = (int)str_replace("ポイント獲得","",$square_effect);
-            Event::addVictoryPoint($player,$number);
-            // アイテムの場合ターン終了
-            return true;
-        }
+
+        // アイテムのためにまだ必要
+            // すすむマス
+            elseif(preg_match("/[0-9]+マスすすむ/",$square_effect)){
+                // 数値抽出
+                $number = (int)str_replace("マスすすむ","",$square_effect);
+                Event::addPlayerPosition($player,$number);
+            }
+            // もどるマス
+            elseif(preg_match("/[0-9]+マスもどる/",$square_effect)){
+                // 数値抽出
+                $number = (int)str_replace("マス戻る","",$square_effect);
+                Event::reducePlayerPosition($player,$number);
+            }
+            // ペナルティターンマス
+            elseif(preg_match("/[0-9]+ターンやすみ/",$square_effect)){
+                $number = (int)str_replace("ターンやすみ","",$square_effect);
+                Event::addPrenaltyTurn($player,$number);
+            }
+            // ポイント獲得
+            elseif(preg_match("/[0-9]+ポイント獲得/",$square_effect)){
+                $number = (int)str_replace("ポイント獲得","",$square_effect);
+                Event::addVictoryPoint($player,$number);
+                // アイテムの場合ターン終了
+                return true;
+            }
+        //
         // 何もなしマス（例外なマスも）
         else{
             Event::nothing();
@@ -88,7 +126,6 @@ class Event{
         echo $player->getName(),"さんは",$number,"ポイント獲得\n";
         $player->addVictoryPoint($number);
     }
-
 }
 
 ?>

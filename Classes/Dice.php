@@ -14,7 +14,11 @@ class Dice{
     public function diceRoll(){
         $key = array_rand($this->number_list);
         $this->number_list = range(1,$this->number_range);
-        return $this->number_list[$key];
+        $number = $this->number_list[$key];
+        WaitProcessing::sleep(0.5);
+        echo $number,"が出た！\n";
+        WaitProcessing::sleep(0.5);
+        return $number;
     }
 
     public function setDiceList($number_list){
